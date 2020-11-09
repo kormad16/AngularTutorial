@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 const app = express();
 
 let students = [
-	{firstname: 'Gerhard', lastname: 'Guggerbauer', year: '5DHIF', id: 0},
+	{firstname: 'Guhard', lastname: 'Gergerbauer', year: '5DHIF', id: 0},
 	{firstname: 'Max', lastname: 'Mustermann', year: '5DHIF', id: 1},
 	{firstname: 'Leistung', lastname: 'Menschlichkeit', year: '5DHIF', id: 2},
 ];
@@ -20,10 +20,13 @@ app.get('/students', (req, res) => {
 app.get('/students/:id', (req, res) => {
 	if (isNaN(req.params.id)) {
 		res.sendStatus(400);
-	} else if (!students[req.params.id]) {
-		res.sendStatus(404);
 	} else {
-		res.send(students[req.params.id]);
+		const index = students.findIndex(s => s.id === +req.params.id);
+		if (index === -1) {
+			res.sendStatus(404);
+		} else {
+			res.send(students[index]);
+		}
 	}
 });
 
@@ -34,7 +37,7 @@ app.post('/students', (req, res) => {
 		req.body.id = students.length;
 		students.push(req.body);
 		console.log('Added new Student');
-		res.send();
+		res.send({ id: req.body.id });
 	} else {
 		res.sendStatus(400);
 	}
@@ -45,10 +48,16 @@ app.put('/students/:id', (req, res) => {
 		!isNaN(req.params.id)
 		&& req.body.firstname && req.body.lastname && req.body.year
 	) {
-		req.body.id = req.params.id;
-		students[students.findIndex(s => s.id === req.params.id)] = req.body;
-		console.log('Updated Student with id ' + req.params.id);
-		res.send();
+		req.body.id = +req.params.id;
+		const index = students.findIndex(s => s.id === req.body.id);
+		if (index === -1) {
+			console.log('Student with id ' + req.params.id + ' not found');
+			res.sendStatus(404);
+		} else {
+			students[index] = req.body;
+			console.log('Updated Student with id ' + req.params.id);
+			res.send(req.body);
+		}
 	} else {
 		res.sendStatus(400);
 	}
@@ -58,9 +67,15 @@ app.delete('/students/:id', (req, res) => {
 	if (
 		!isNaN(req.params.id)
 	) {
-		students = students.filter(s => s.id !== req.params.id);
-		console.log('Deleted Student with id ' + req.params.id);
-		res.send();
+		const cnt = students.length;
+		students = students.filter(s => s.id !== +req.params.id);
+		if (students.length === cnt) {
+			console.log('Student with id ' + req.params.id + ' not found');
+			res.sendStatus(404);
+		} else {
+			console.log('Deleted Student with id ' + req.params.id);
+			res.send();
+		}
 	} else {
 		res.sendStatus(400);
 	}

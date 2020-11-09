@@ -1,1 +1,4 @@
-/api/node_modules
+/student-api/node_modules
+/student-api/.editorconfig
+/student-manager/node_modules
+/student-manager/.editorconfig
