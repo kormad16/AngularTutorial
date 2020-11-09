@@ -1,0 +1,13 @@
+<button (click)="goBack()">Back</button>
+
+<div *ngIf="student">
+  <h2>Editing: {{student.firstname}} {{student.lastname}}</h2>
+  <input [(ngModel)]="student.firstname" />
+  <input [(ngModel)]="student.lastname" />
+  <input [(ngModel)]="student.year" />
+  <br>
+  <button (click)="save()">Save</button>
+  <button *ngIf="id !== undefined" (click)="delete()">Delete</button>
+</div>
+
+<p *ngIf="error" style="color: red">{{error}}</p>

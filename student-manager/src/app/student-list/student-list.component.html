@@ -1,0 +1,6 @@
+<button routerLink="/students/new">Add Student</button>
+<ul>
+  <li *ngFor="let student of students" [routerLink]="'/students/' + student.id">
+    {{student.id}}: {{student.firstname}} {{student.lastname}} {{student.year}}
+  </li>
+</ul>
